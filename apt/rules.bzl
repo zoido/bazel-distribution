@@ -103,7 +103,7 @@ def assemble_apt(name,
     deb_data = None
     all_files = {}
     all_files.update(files)
-    all_files.update(conffile)
+    all_files.update(conffiles)
     if installation_dir:
         pkg_tar(
             name = tar_name,
@@ -154,7 +154,7 @@ def assemble_apt(name,
     pkg_deb(
         name = name,
         data = deb_data,
-        conffile = conffile.values(),
+        conffiles = conffiles.values(),
         preinst = preinst,
         postinst = postinst,
         prerm = prerm,
