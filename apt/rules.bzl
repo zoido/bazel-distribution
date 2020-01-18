@@ -50,8 +50,13 @@ def assemble_apt(name,
                  archives = [],
                  empty_dirs = [],
                  files = {},
+                 conffiles = {},
                  depends = [],
                  symlinks = {},
+                 preinst = [],
+                 postinst = [],
+                 prerm = [],
+                 postrm = [],
                  permissions = {}):
     """Assemble package for installation with APT
 
@@ -75,14 +80,30 @@ def assemble_apt(name,
         empty_dirs: list of empty directories created at package installation
         files: mapping between Bazel labels of archives that go into .deb package
             and their resulting location on .deb package installation
+        conffiles: mapping between Bazel labels that go into .deb package
+            and their resulting location on .deb package installation that will
+            be dealt as cnoffiles.
+
+            See https://www.debian.org/doc/manuals/debian-faq/ch-pkg_basics.en.html#s-conffile.
         depends: list of Debian packages this package depends on
             https://www.debian.org/doc/debian-policy/ch-relationships.htm
         symlinks: mapping between source and target of symbolic links
             created at installation
+        preinst: pre-install scripts for the package
+            See http://www.debian.org/doc/debian-policy/ch-maintainerscripts.html.
+        postinst: post-install scripts for the package
+            See http://www.debian.org/doc/debian-policy/ch-maintainerscripts.html.
+        prerm: pre-remove scripts for the package
+            See http://www.debian.org/doc/debian-policy/ch-maintainerscripts.html.
+        postrm: post-remove scripts for the package
+            See http://www.debian.org/doc/debian-policy/ch-maintainerscripts.html.
         permissions: mapping between paths and UNIX permissions
     """
     tar_name = "_{}-deb-tar".format(package_name)
     deb_data = None
+    all_files = {}
+    all_files.update(files)
+    all_files.update(conffile)
     if installation_dir:
         pkg_tar(
             name = tar_name,
@@ -90,7 +111,7 @@ def assemble_apt(name,
             deps = archives,
             package_dir = installation_dir,
             empty_dirs = empty_dirs,
-            files = files,
+            files = all_files,
             mode = "0755",
             symlinks = symlinks,
             modes = permissions,
@@ -133,6 +154,11 @@ def assemble_apt(name,
     pkg_deb(
         name = name,
         data = deb_data,
+        conffile = conffile.values(),
+        preinst = preinst,
+        postinst = postinst,
+        prerm = prerm,
+        postrm = postrm,
         package = package_name,
         depends_file = depends_file_target_name,
         maintainer = maintainer,
