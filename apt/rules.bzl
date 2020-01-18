@@ -53,10 +53,10 @@ def assemble_apt(name,
                  conffiles = {},
                  depends = [],
                  symlinks = {},
-                 preinst = [],
-                 postinst = [],
-                 prerm = [],
-                 postrm = [],
+                 preinst = None,
+                 postinst = None,
+                 prerm = None,
+                 postrm = None,
                  permissions = {}):
     """Assemble package for installation with APT
 
@@ -89,13 +89,13 @@ def assemble_apt(name,
             https://www.debian.org/doc/debian-policy/ch-relationships.htm
         symlinks: mapping between source and target of symbolic links
             created at installation
-        preinst: pre-install scripts for the package
+        preinst: pre-install script for the package
             See http://www.debian.org/doc/debian-policy/ch-maintainerscripts.html.
-        postinst: post-install scripts for the package
+        postinst: post-install script for the package
             See http://www.debian.org/doc/debian-policy/ch-maintainerscripts.html.
-        prerm: pre-remove scripts for the package
+        prerm: pre-remove script for the package
             See http://www.debian.org/doc/debian-policy/ch-maintainerscripts.html.
-        postrm: post-remove scripts for the package
+        postrm: post-remove script for the package
             See http://www.debian.org/doc/debian-policy/ch-maintainerscripts.html.
         permissions: mapping between paths and UNIX permissions
     """
